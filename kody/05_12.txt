@@ -1,0 +1,126 @@
+#lab3
+
+#A
+ssh -nNT user@ux -L 1050:10.6.6.107:1050
+ssh root@127.0.0.1 -p 1050 (w nowym oknie terminala)
+
+#C1
+cd /etc/apache2/sites-available
+nano site.conf
+
+Options -FollowSymLinks -SymLinksIfOwnerMatch (wpisać przy każdym katalogu)
+
+service apache2 restart
+
+#C2
+mkdir /miejsca_na_serniku_dla_moich_najlepszych_kumpli
+
+#C3
+cd /miejsca_na_serniku_dla_moich_najlepszych_kumpli
+mkdir za_wiedza_generala
+mkdir absolutnie_tajne_lamane_przez_poufne
+
+#C4
+cd za_wiedza_generala
+mkdir porucznik
+mkdir kapitan
+cd ../absolutnie_tajne_lamane_przez_poufne
+mkdir waldek
+mkdir janek
+
+#C5.1
+cd /etc/apache2/sites-available
+nano site.conf
+
+Alias "/prp" "/miejsca_na_serniku_dla_moich_najlepszych_kumpli/za_wiedza_generala/porucznik"
+<Directory "/miejsca_na_serniku_dla_moich_najlepszych_kumpli/za_wiedza_generala/porucznik">
+	Options +Indexes
+        AllowOverride None
+        Require all granted
+</Directory>
+
+#C5.2
+cd /etc/apache2/sites-available
+nano site.conf
+
+Alias "/kapitan" "/miejsca_na_serniku_dla_moich_najlepszych_kumpli/za_wiedza_generala/kapitan"
+<Directory "/miejsca_na_serniku_dla_moich_najlepszych_kumpli/za_wiedza_generala/kapitan">
+	Options +Indexes
+        AllowOverride None
+        Require all granted
+	Order allow,deny
+	Allow from 10.6.6.107
+	Allow from 10.6.6.109
+	Allow from 10.6.6.104
+	Allow from 10.9.9.2
+</Directory>
+
+#C5.3
+cd /etc/apache2/sites-available
+nano site.conf
+
+Alias "/waldek" "/miejsca_na_serniku_dla_moich_najlepszych_kumpli/absolutnie_tajne_lamane_przez_poufne/waldek"
+<Directory "/miejsca_na_serniku_dla_moich_najlepszych_kumpli/absolutnie_tajne_lamane_przez_poufne/waldek">      
+	AuthType Basic
+	AuthBasicProvider file
+	AuthName "Witaj Panie, zaloguj sie!"
+	AuthUserFile /home/.htpasswd
+        Require valid-user
+	Options +Indexes
+</Directory>
+
+htpasswd -c /home/.htpasswd koles (pass=helo)
+chmod 600 /home/.htpasswd
+chown www-data /home/.htpasswd
+
+#C5.4
+cd /etc/apache2/sites-available
+nano site.conf
+
+(u waldka dopisać) Options +Indexes +FollowSymLinks +SymLinksIfOwnerMatch
+
+cd /miejsca_na_serniku_dla_moich_najlepszych_kumpli/absolutnie_tajne_lamane_przez_poufne/waldek
+ln -s /miejsca_na_serniku_dla_moich_najlepszych_kumpli/absolutnie_tajne_lamane_przez_poufne/janek janek
+
+
+#C5.*(1)
+(w nowym terminalu) scp -P 1050 ./404.png root@127.0.0.1:~/404.png
+(w nowym terminalu) scp -P 1050 ./403.jpg root@127.0.0.1:~/403.jpg
+
+cd /var/www/site
+mv ~/403.jpg ./403.jpg
+mv ~/404.png ./404.png
+
+nano error403.html
+<img src="403.jpg" alt="Blad 403" />
+
+nano error404.html
+<img src="404.png" alt="Blad 404" />
+
+cd /etc/apache2/sites-available
+nano site.conf
+
+ErrorDocument 403 /error403.html
+ErrorDocument 404 /error404.html
+
+#C5.*(2)
+mkdir /jakiskatalog
+mkdir /jakiskatalog/dokumenty
+
+cd /etc/apache2/sites-available
+nano site.conf
+
+Alias "/dok" "/jakiskatalog/dokumenty"
+<Directory "/jakiskatalog/dokumenty">  
+	ErrorDocument 403 /errorDok403.html
+	ErrorDocument 404 /errorDok404.html    
+	Options +Indexes
+</Directory>
+
+#C5.*(3)
+nano errorDok403.html
+kaszëbsczi jãzëk 403
+
+nano errorDok404.html
+kaszëbsczi jãzëk 404
+

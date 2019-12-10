@@ -1,0 +1,36 @@
+107
+
+10.55.0.0/16
+10.55.11.11
+10.6.6.0/24 -> VPS
+
+mój 10.6.6.107
+
+student - teruina405
+
+#logowanie
+ssh user@ux
+ssh root@10.6.6.107 (pass jak na ux)
+
+#zmiana hasla
+passwd
+
+#aktualizacja
+apt update
+apt upgrade
+
+#nasłuchiwane porty
+ss -lpn
+
+#zmiana [prtu ssh
+nano /etc/ssh/sshd_config
+Port 1050
+service ssh restart 
+
+#nowe logowanie
+ssh -p 1050 root@10.6.6.107
+
+#zmiana hostname
+nano /etc/hosts
+zmiana
+hostname user

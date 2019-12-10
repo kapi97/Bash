@@ -1,0 +1,86 @@
+#lab5
+
+#A
+10.6.6.107	domena-user.pl
+10.6.6.107	domena-grupa.com
+10.6.6.107	domena-test.gog
+
+#B1, B2, B3
+cd /etc/apache2/sites-available/
+nano domena_user.conf
+
+<VirtualHost 10.6.6.107:80>
+	ServerAdmin webmaster@domena-user.pl
+	ServerName domena-user.pl
+	ServerSignature Email
+	DocumentRoot /var/www/site
+
+	ErrorLog /var/log/apache2/domena-user_error.log
+	CustomLog /var/log/apache2/domena-user_access.log
+
+	<Directory "/var/www/site">
+		Options +Indexes
+		AllowOverride All
+		Require all granted
+	</Directory>
+</VirtualHost>
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+
+nano domena-grupa.conf
+
+<VirtualHost 10.6.6.107:80>
+	ServerAdmin webmaster@domena-grupa.com
+	ServerName domena-grupa.com
+	ServerSignature Email
+	DocumentRoot /php
+
+	ErrorLog /var/log/apache2/domena-grupa_error.log
+	CustomLog /var/log/apache2/domena-grupa_access.log
+
+	<Directory "/php">
+		Options +Indexes
+		AllowOverride All
+		Require all granted
+	</Directory>
+</VirtualHost>
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+
+nano domena-test.conf
+
+<VirtualHost 10.6.6.107:80>
+	ServerAdmin webmaster@domena-test.gog
+	ServerName domena-test.gog
+	ServerSignature Email
+	DocumentRoot /var/https
+
+	ErrorLog /var/log/apache2/domena-test_error.log
+	CustomLog /var/log/apache2/domena-test_access.log
+
+	<Directory "/var/https">
+		Options +Indexes
+		AllowOverride All
+		Require all granted
+	</Directory>
+</VirtualHost>
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+
+a2ensite domena_user.conf
+a2ensite domena_grupa.conf
+a2ensite domena_test.conf
+
+#B5
+apt install mysql-server
+apt install phpmyadmin
+
+#B6
+nano /etc/apache2/apache2.conf
+(Dopisaæ) Include /etc/phpmyadmin/apache.conf
+
+nano /etc/phpmyadmin/apache.conf 
+(<Directory /usr/share/phpMyAdmin/> <- w tym dopisaæ)
+order deny,allow 
+deny from all 
+allow from 172.10.0.0/22
+
+#B7
+https://www.digitalocean.com/community/tutorials/how-to-install-simple-machines-on-ubuntu-12-10

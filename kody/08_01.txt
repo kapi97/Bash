@@ -1,0 +1,67 @@
+#lab4
+
+#A
+ifconfig ens32:0 172.16.0.1/22
+
+#B1 i B2
+mkdir /var/www/intranet
+echo "Witaj w intranet!" > /var/www/intranet/index.html
+
+nano /etc/apache2/sites-available/site.conf
+(Edycja w pierszej linijce * na 10.6.6.107)
+
+nano /etc/apache2/sites-available/intranet.conf
+
+<VirtualHost 172.16.0.1:80>
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/intranet
+
+	ErrorLog /var/log/apache2/intraner_error.log
+	CustomLog /var/log/apache2/intraner_access.log combined
+
+	<Directory "/var/www/intranet">
+		Options +Indexes
+		AllowOverride All
+		Require all granted
+	</Directory>
+</VirtualHost>
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+
+a2ensite intanet.conf
+
+#B3 i B4
+ifconfig ens32:1 172.16.10.1/28
+
+mkdir /var/www/forroot
+echo "Witaj w root!" > /var/www/forroot/index.html
+ 
+cp /etc/apache2/sites-available/intranet.conf /etc/apache2/sites-available/forroot.conf
+
+nano /etc/apache2/sites-available/forroot.conf
+
+<VirtualHost 172.16.10.1:81>
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/forroot
+
+	ErrorLog /var/log/apache2/forroot_error.log
+	CustomLog /var/log/apache2/forroot_access.log combined
+
+	<Directory "/var/www/forroot">
+		Options +Indexes
+		AllowOverride All
+
+		AuthType Basic
+		AuthName "Tylko dla administratora!"
+		AuthBasicProvider file
+		AuthUserFile "/pass/password"
+		Require user admin
+	</Directory>
+</VirtualHost>
+
+a2ensite forroot.conf
+
+nano /etc/apache2/ports.conf
+(Dopisaæ) LISTEN 81
+
+mkdir /pass
+htpasswd -c /pass/passwords admin

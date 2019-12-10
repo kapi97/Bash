@@ -1,0 +1,64 @@
+#lab3
+
+#D1
+apt install php
+
+#D2
+nano /etc/php/7.0/cli/php.ini
+
+#D3
+php -a
+phpinfo();
+
+#D4
+nano /etc/php/7.0/cli/php.ini
+upload_max_filesize = 4M
+
+#D5
+mkdir /php
+nano /etc/apache2/sites-available/site.conf
+
+<Directory "/">
+	php_flag engine off
+</Directory>
+
+Alias "/php" "/php"
+<Directory "/php">
+	php_flag engine on
+</Directory>
+
+#D6
+adduser user1
+adduser user2
+
+a2enmod userdir
+
+su user1
+mkdir ~/public_html && chmod 0755 ~/public_html
+echo "<?php phpinfo(); ?>" > ~/public_html/info.php
+exit
+
+su user2
+mkdir ~/public_html && chmod 0755 ~/public_html
+echo "<?php phpinfo(); ?>" > ~/public_html/info.php
+exit
+
+nano /etc/apache2/sites-available/site.conf
+<IfModule mod_userdir.c>
+	UserDir public_html
+
+	<Directory "/home/user1/public_html>
+		Options -SymLinksIfOwnerMatch
+	</Directory>
+
+	<Directory "/home/user2/public_html>
+		Options -SymLinksIfOwnerMatch
+	</Directory>
+</IfModule>
+
+nano /etc/apache2/mods-available/php7.0.conf
+(zakomentowaæ modu³ na koñcu)
+
+#D7
+nano /etc/apache2/sites-available/site.conf
+(Dopisaæ dla user1) php_flag engine on

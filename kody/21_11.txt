@@ -1,0 +1,33 @@
+#logowanie
+ssh user@ux
+ssh -p 1050 root@10.6.6.107
+
+#instalacja pakietów
+apt update
+apt upgrade
+apt install mc
+apt install elinks
+apt install apache2
+
+#odpalenie przeglądarki
+elinks 10.6.6.107
+
+#polecenia hosta wirtualnego
+a2 + tab
+
+#domyśla śieżka (DocumentRoot)
+/var/www/html
+
+#zmiana nazwy
+mv index.html ineks.html
+
+#wyłączenie indeksowania
+[plik /etc/apache2/sites-avaliable/000-default.conf]
+<Directory "/var/www">
+	Options FollowSymLinks
+	AllowOverride None
+	Require all granted
+</Directory>
+service apache2 restart
+
+nano / mcedit

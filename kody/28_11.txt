@@ -1,0 +1,107 @@
+#lab2
+
+#E1
+cd /var/log/apache2
+cat access.log 
+cat error.log
+elinks 10.6.6.107 (z servera oraz z ux)
+
+#E2
+cd /var/www/html
+nano ja.html
+
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>WITAJ</title>
+	</head>
+	<body>
+		<p>WITAJ NA MOJEJ STRONIE!</p>
+	</body>
+</html>
+
+elinks 10.6.6.107/ja.html
+
+#E3
+cd /etc/apache2/sites-available
+nano 000-default.conf 
+(dopisać) DirectoryIndex ja.html
+service apache2 restart
+elinks 10.6.6.107
+
+#E4
+cd /var/www/html
+cp ja.html index.html
+nano index.html
+elinks 10.6.6.107
+elinks 10.6.6.107/index.html
+
+#E5
+cd /etc/apache2
+nano ports.conf
+(dopisać) Listen 8080
+(dopisać) Listen 8081
+service apache2 restart
+ss -lpn (skopiować to co poniżej będzie wklejone)
+cd /var/www/html
+nano E1.html
+(wkleić to poniżej)
+tcp    LISTEN     0      128                                                                                     :::8080                                                                                                :::*                   users:(("apache2",pid=19199,fd=6),("apache2",pid=19198,fd=6),("apache2",pid=19197,fd=6))
+tcp    LISTEN     0      128                                                                                     :::8081                                                                                                :::*                   users:(("apache2",pid=19199,fd=8),("apache2",pid=19198,fd=8),("apache2",pid=19197,fd=8))
+
+#F1
+a2dissite 000-default.conf
+
+#F2
+cd /var/www
+mkdir site
+cd site
+mkdir K1
+mkdir K2
+
+cd /etc/apache2/sites-available
+nano site.conf
+
+(wkleić)
+
+ServerAdmin webmaster@localhost
+DocumentRoot /var/www/site
+
+ErrorLog /var/log/apache2/site_error.log
+CustomLog /var/log/apache2/site_access.log combined
+
+<Directory "/var/www/site">
+	Options +Indexes
+</Directory>
+
+
+<Directory "/var/www/site/K1">
+	Options -Indexes +FollowSymLinks
+        AllowOverride None
+        Require all granted
+</Directory>
+
+<Directory "/var/www/site/K2">
+	Options -FollowSymLinks
+        AllowOverride All
+        Require all granted
+</Directory>
+
+cd /var/www/site/K2
+nano .htaccess
+(wpisać) Options -Indexes
+
+a2ensite site.conf
+systemctl reload apache2
+
+cd /var/www/site/
+mkdir zadania
+cd zadania
+mkdir cwiczenia2
+cd cwiczenia2
+cp /var/www/html/E1.html ./E1.html
+
+cat /var/log/apache2/site_access.log >> E2.html
+cat /var/log/apache2/site_error.log >> E2.html
+
